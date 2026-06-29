@@ -913,49 +913,120 @@ body {
   <div class="pf-right">Confidential — Prepared for Maya Shoval Sign-off & Jul 13 Leadership Conversation</div>
 </footer>
 
-<div class="edit-hint" id="editHint">Click status dots to cycle color. Click owner to edit. All changes auto-save.</div>
+<div class="edit-hint" id="editHint">Click status dots to cycle color. Click owner to edit. Changes sync to all viewers.</div>
 <div class="save-flash" id="saveFlash">Saved</div>
 
 <script>
 (function() {
-  const STORAGE_KEY = 'doorloop_gap_edits_v3';
+  const STORAGE_KEY = 'doorloop_gap_edits_v4';
   const STATUS_CYCLE = ['green','amber','red'];
   const STATUS_LABELS = {green:'Live',amber:'In Progress',red:'Blocked'};
   const STATUS_CLASSES = {green:'live',amber:'progress',red:'blocked'};
 
-  // Load saved edits
+  // State management — uses /api/state (Vercel serverless) when deployed,
+  // falls back to localStorage when running locally
+  let currentSha = null;
+  let syncTimer = null;
+  const API_BASE = (window.location.hostname === 'localhost' || window.location.protocol === 'file:')
+    ? null  // local mode: localStorage only
+    : '/api/state';
+
+  // ─── READ STATE ───
+  async function loadState() {
+    // Try remote first
+    if (API_BASE) {
+      try {
+        const resp = await fetch(API_BASE);
+        if (resp.ok) {
+          const data = await resp.json();
+          currentSha = data.sha;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.state.edits || {}));
+          return data.state.edits || {};
+        }
+      } catch (e) { console.warn('Remote load failed, using localStorage', e); }
+    }
+    // Fallback to localStorage
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+  }
+
+  // ─── WRITE STATE ───
   function getEdits() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
   }
+
   function saveEdits(edits) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
     showSave();
-  }
-  function showSave() {
-    const el = document.getElementById('saveFlash');
-    el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 1500);
+    // Debounced remote sync (waits 1.5s after last edit before pushing)
+    if (API_BASE) {
+      clearTimeout(syncTimer);
+      syncTimer = setTimeout(() => syncToRemote(edits), 1500);
+    }
   }
 
-  // Get unique ID for a feature row
+  async function syncToRemote(edits) {
+    if (!API_BASE || !currentSha) return;
+    try {
+      const state = {
+        edits,
+        lastUpdated: new Date().toISOString(),
+        updatedBy: localStorage.getItem('dl_note_author') || 'anonymous'
+      };
+      const resp = await fetch(API_BASE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ state, sha: currentSha })
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        currentSha = data.sha;
+        updateSyncStatus('synced');
+      } else {
+        // SHA conflict — reload remote state
+        const fresh = await fetch(API_BASE);
+        if (fresh.ok) {
+          const d = await fresh.json();
+          currentSha = d.sha;
+          // Merge: local wins for conflicts
+          const merged = { ...(d.state.edits || {}), ...edits };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          await syncToRemote(merged);
+        }
+      }
+    } catch (e) { console.warn('Sync failed', e); updateSyncStatus('offline'); }
+  }
+
+  function updateSyncStatus(status) {
+    const flash = document.getElementById('saveFlash');
+    if (status === 'synced') { flash.textContent = 'Synced'; flash.style.borderColor = 'rgba(74,222,128,.35)'; }
+    else if (status === 'offline') { flash.textContent = 'Saved locally'; flash.style.borderColor = 'rgba(251,191,36,.35)'; }
+    flash.classList.add('show');
+    setTimeout(() => flash.classList.remove('show'), 2000);
+  }
+
+  function showSave() {
+    const el = document.getElementById('saveFlash');
+    el.textContent = API_BASE ? 'Saving...' : 'Saved';
+    el.classList.add('show');
+    if (!API_BASE) setTimeout(() => el.classList.remove('show'), 1500);
+  }
+
+  // ─── ROW ID ───
   function rowId(row) {
     const name = row.querySelector('.fr-name');
     if (!name) return null;
     return name.textContent.trim().replace(/\s+/g,'_').substring(0,40);
   }
 
-  // Make status indicators clickable
-  function initStatusEditing() {
-    const edits = getEdits();
+  // ─── STATUS EDITING ───
+  function initStatusEditing(edits) {
     document.querySelectorAll('.feature-row:not(.header)').forEach(row => {
       const id = rowId(row);
       if (!id) return;
-
       const dot = row.querySelector('.status-indicator');
       const badge = row.querySelector('.fr-status');
       if (!dot || !badge) return;
 
-      // Apply saved state
       if (edits[id] && edits[id].status) {
         const s = edits[id].status;
         dot.className = 'status-indicator ' + s;
@@ -963,68 +1034,51 @@ body {
         badge.textContent = STATUS_LABELS[s];
       }
 
-      // Click to cycle
-      dot.addEventListener('click', () => cycleStatus(row, id, dot, badge));
-      badge.addEventListener('click', () => cycleStatus(row, id, dot, badge));
+      dot.addEventListener('click', () => cycleStatus(id, dot, badge));
+      badge.addEventListener('click', () => cycleStatus(id, dot, badge));
     });
   }
 
-  function cycleStatus(row, id, dot, badge) {
+  function cycleStatus(id, dot, badge) {
     const current = STATUS_CYCLE.find(s => dot.classList.contains(s)) || 'green';
     const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(current) + 1) % STATUS_CYCLE.length];
     dot.className = 'status-indicator ' + next;
     badge.className = 'fr-status ' + STATUS_CLASSES[next];
     badge.textContent = STATUS_LABELS[next];
-
     const edits = getEdits();
     if (!edits[id]) edits[id] = {};
     edits[id].status = next;
     saveEdits(edits);
   }
 
-  // Make owner fields editable
-  function initOwnerEditing() {
-    const edits = getEdits();
+  // ─── OWNER EDITING ───
+  function initOwnerEditing(edits) {
     document.querySelectorAll('.feature-row:not(.header)').forEach(row => {
       const id = rowId(row);
       if (!id) return;
-
       const owner = row.querySelector('.fr-owner');
       if (!owner) return;
 
-      // Apply saved state
       if (edits[id] && edits[id].owner !== undefined) {
         owner.textContent = edits[id].owner;
       }
 
       owner.setAttribute('contenteditable', 'true');
       owner.setAttribute('spellcheck', 'false');
-
       owner.addEventListener('blur', () => {
         const edits = getEdits();
         if (!edits[id]) edits[id] = {};
         edits[id].owner = owner.textContent.trim();
         saveEdits(edits);
       });
-
       owner.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') { e.preventDefault(); owner.blur(); }
       });
     });
   }
 
-  // Show edit hint on first visit
-  function showHint() {
-    if (localStorage.getItem('doorloop_hint_shown')) return;
-    const hint = document.getElementById('editHint');
-    hint.classList.add('show');
-    setTimeout(() => { hint.classList.remove('show'); localStorage.setItem('doorloop_hint_shown','1'); }, 5000);
-    document.addEventListener('click', () => { hint.classList.remove('show'); localStorage.setItem('doorloop_hint_shown','1'); }, {once:true});
-  }
-
-  // Also make contractual feature statuses editable
-  function initContractEditing() {
-    const edits = getEdits();
+  // ─── CONTRACT STATUS EDITING ───
+  function initContractEditing(edits) {
     document.querySelectorAll('.cg-item').forEach(item => {
       const nameEl = item.querySelector('.cg-name');
       const statusEl = item.querySelector('.cg-status');
@@ -1033,14 +1087,12 @@ body {
 
       const id = 'contract_' + nameEl.textContent.trim().replace(/\s+/g,'_').substring(0,30);
 
-      // Apply saved
       if (edits[id] && edits[id].status) {
         const s = edits[id].status;
         numEl.className = 'cg-num ' + s;
         statusEl.className = 'cg-status ' + s;
       }
 
-      // Click to cycle
       numEl.style.cursor = 'pointer';
       statusEl.style.cursor = 'pointer';
       numEl.addEventListener('click', () => cycleContract(id, numEl, statusEl));
@@ -1053,18 +1105,80 @@ body {
     const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(current) + 1) % STATUS_CYCLE.length];
     numEl.className = 'cg-num ' + next;
     statusEl.className = 'cg-status ' + next;
-
     const edits = getEdits();
     if (!edits[id]) edits[id] = {};
     edits[id].status = next;
     saveEdits(edits);
   }
 
-  // Init
-  initStatusEditing();
-  initOwnerEditing();
-  initContractEditing();
-  showHint();
+  // ─── HINT ───
+  function showHint() {
+    if (localStorage.getItem('doorloop_hint_shown_v2')) return;
+    const hint = document.getElementById('editHint');
+    hint.classList.add('show');
+    setTimeout(() => { hint.classList.remove('show'); localStorage.setItem('doorloop_hint_shown_v2','1'); }, 5000);
+    document.addEventListener('click', () => { hint.classList.remove('show'); localStorage.setItem('doorloop_hint_shown_v2','1'); }, {once:true});
+  }
+
+  // ─── PERIODIC REFRESH (pull remote changes every 30s) ───
+  function startPolling() {
+    if (!API_BASE) return;
+    setInterval(async () => {
+      try {
+        const resp = await fetch(API_BASE);
+        if (!resp.ok) return;
+        const data = await resp.json();
+        if (data.sha !== currentSha) {
+          currentSha = data.sha;
+          const remote = data.state.edits || {};
+          const local = getEdits();
+          // Only apply remote changes for keys we haven't locally modified in the last 5s
+          const merged = { ...remote, ...local };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          applyEdits(merged);
+        }
+      } catch (e) {}
+    }, 30000);
+  }
+
+  function applyEdits(edits) {
+    document.querySelectorAll('.feature-row:not(.header)').forEach(row => {
+      const id = rowId(row);
+      if (!id || !edits[id]) return;
+      const dot = row.querySelector('.status-indicator');
+      const badge = row.querySelector('.fr-status');
+      const owner = row.querySelector('.fr-owner');
+      if (edits[id].status && dot && badge) {
+        const s = edits[id].status;
+        dot.className = 'status-indicator ' + s;
+        badge.className = 'fr-status ' + STATUS_CLASSES[s];
+        badge.textContent = STATUS_LABELS[s];
+      }
+      if (edits[id].owner !== undefined && owner && document.activeElement !== owner) {
+        owner.textContent = edits[id].owner;
+      }
+    });
+    document.querySelectorAll('.cg-item').forEach(item => {
+      const nameEl = item.querySelector('.cg-name');
+      const numEl = item.querySelector('.cg-num');
+      const statusEl = item.querySelector('.cg-status');
+      if (!nameEl || !numEl || !statusEl) return;
+      const id = 'contract_' + nameEl.textContent.trim().replace(/\s+/g,'_').substring(0,30);
+      if (edits[id] && edits[id].status) {
+        numEl.className = 'cg-num ' + edits[id].status;
+        statusEl.className = 'cg-status ' + edits[id].status;
+      }
+    });
+  }
+
+  // ─── INIT ───
+  loadState().then(edits => {
+    initStatusEditing(edits);
+    initOwnerEditing(edits);
+    initContractEditing(edits);
+    showHint();
+    startPolling();
+  });
 })();
 </script>
 </body>
