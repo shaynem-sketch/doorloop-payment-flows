@@ -182,7 +182,38 @@ body {
 .fr-gap { font-size:11px; color:var(--text-mid); line-height:1.4; }
 .fr-gap strong { color:var(--white); font-weight:600; }
 
-.fr-owner { font-size:10.5px; color:var(--text-dim); line-height:1.3; }
+.fr-owner {
+  font-size:10.5px; color:var(--text-dim); line-height:1.3;
+  cursor:text; padding:2px 4px; border-radius:4px; border:1px solid transparent;
+  transition:border-color .15s, background .15s; min-width:60px;
+}
+.fr-owner:hover { border-color:var(--border-md); background:rgba(219,234,255,.03); }
+.fr-owner:focus { border-color:rgba(223,254,2,.4); background:rgba(219,234,255,.05); outline:none; color:var(--white); }
+
+/* Editable status */
+.fr-status { cursor:pointer; user-select:none; transition:transform .1s; }
+.fr-status:hover { transform:scale(1.05); }
+.fr-status:active { transform:scale(0.95); }
+.status-indicator { cursor:pointer; transition:transform .15s; }
+.status-indicator:hover { transform:scale(1.3); }
+
+/* Edit hint */
+.edit-hint {
+  position:fixed; bottom:20px; right:20px; z-index:100;
+  background:rgba(223,254,2,.1); border:1px solid rgba(223,254,2,.25);
+  color:var(--neon); font-size:10px; font-weight:600; padding:8px 14px;
+  border-radius:10px; pointer-events:none; opacity:0; transition:opacity .3s;
+}
+.edit-hint.show { opacity:1; pointer-events:auto; }
+
+/* Save indicator */
+.save-flash {
+  position:fixed; top:80px; right:24px; z-index:100;
+  background:rgba(74,222,128,.12); border:1px solid rgba(74,222,128,.35);
+  color:var(--green); font-size:10px; font-weight:700; padding:6px 12px;
+  border-radius:8px; opacity:0; transition:opacity .3s; pointer-events:none;
+}
+.save-flash.show { opacity:1; }
 
 /* ── CONTRACTUAL FEATURES ── */
 .contract-section {
@@ -882,5 +913,159 @@ body {
   <div class="pf-right">Confidential — Prepared for Maya Shoval Sign-off & Jul 13 Leadership Conversation</div>
 </footer>
 
+<div class="edit-hint" id="editHint">Click status dots to cycle color. Click owner to edit. All changes auto-save.</div>
+<div class="save-flash" id="saveFlash">Saved</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'doorloop_gap_edits_v3';
+  const STATUS_CYCLE = ['green','amber','red'];
+  const STATUS_LABELS = {green:'Live',amber:'In Progress',red:'Blocked'};
+  const STATUS_CLASSES = {green:'live',amber:'progress',red:'blocked'};
+
+  // Load saved edits
+  function getEdits() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+  }
+  function saveEdits(edits) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(edits));
+    showSave();
+  }
+  function showSave() {
+    const el = document.getElementById('saveFlash');
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 1500);
+  }
+
+  // Get unique ID for a feature row
+  function rowId(row) {
+    const name = row.querySelector('.fr-name');
+    if (!name) return null;
+    return name.textContent.trim().replace(/\s+/g,'_').substring(0,40);
+  }
+
+  // Make status indicators clickable
+  function initStatusEditing() {
+    const edits = getEdits();
+    document.querySelectorAll('.feature-row:not(.header)').forEach(row => {
+      const id = rowId(row);
+      if (!id) return;
+
+      const dot = row.querySelector('.status-indicator');
+      const badge = row.querySelector('.fr-status');
+      if (!dot || !badge) return;
+
+      // Apply saved state
+      if (edits[id] && edits[id].status) {
+        const s = edits[id].status;
+        dot.className = 'status-indicator ' + s;
+        badge.className = 'fr-status ' + STATUS_CLASSES[s];
+        badge.textContent = STATUS_LABELS[s];
+      }
+
+      // Click to cycle
+      dot.addEventListener('click', () => cycleStatus(row, id, dot, badge));
+      badge.addEventListener('click', () => cycleStatus(row, id, dot, badge));
+    });
+  }
+
+  function cycleStatus(row, id, dot, badge) {
+    const current = STATUS_CYCLE.find(s => dot.classList.contains(s)) || 'green';
+    const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(current) + 1) % STATUS_CYCLE.length];
+    dot.className = 'status-indicator ' + next;
+    badge.className = 'fr-status ' + STATUS_CLASSES[next];
+    badge.textContent = STATUS_LABELS[next];
+
+    const edits = getEdits();
+    if (!edits[id]) edits[id] = {};
+    edits[id].status = next;
+    saveEdits(edits);
+  }
+
+  // Make owner fields editable
+  function initOwnerEditing() {
+    const edits = getEdits();
+    document.querySelectorAll('.feature-row:not(.header)').forEach(row => {
+      const id = rowId(row);
+      if (!id) return;
+
+      const owner = row.querySelector('.fr-owner');
+      if (!owner) return;
+
+      // Apply saved state
+      if (edits[id] && edits[id].owner !== undefined) {
+        owner.textContent = edits[id].owner;
+      }
+
+      owner.setAttribute('contenteditable', 'true');
+      owner.setAttribute('spellcheck', 'false');
+
+      owner.addEventListener('blur', () => {
+        const edits = getEdits();
+        if (!edits[id]) edits[id] = {};
+        edits[id].owner = owner.textContent.trim();
+        saveEdits(edits);
+      });
+
+      owner.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); owner.blur(); }
+      });
+    });
+  }
+
+  // Show edit hint on first visit
+  function showHint() {
+    if (localStorage.getItem('doorloop_hint_shown')) return;
+    const hint = document.getElementById('editHint');
+    hint.classList.add('show');
+    setTimeout(() => { hint.classList.remove('show'); localStorage.setItem('doorloop_hint_shown','1'); }, 5000);
+    document.addEventListener('click', () => { hint.classList.remove('show'); localStorage.setItem('doorloop_hint_shown','1'); }, {once:true});
+  }
+
+  // Also make contractual feature statuses editable
+  function initContractEditing() {
+    const edits = getEdits();
+    document.querySelectorAll('.cg-item').forEach(item => {
+      const nameEl = item.querySelector('.cg-name');
+      const statusEl = item.querySelector('.cg-status');
+      const numEl = item.querySelector('.cg-num');
+      if (!nameEl || !statusEl || !numEl) return;
+
+      const id = 'contract_' + nameEl.textContent.trim().replace(/\s+/g,'_').substring(0,30);
+
+      // Apply saved
+      if (edits[id] && edits[id].status) {
+        const s = edits[id].status;
+        numEl.className = 'cg-num ' + s;
+        statusEl.className = 'cg-status ' + s;
+      }
+
+      // Click to cycle
+      numEl.style.cursor = 'pointer';
+      statusEl.style.cursor = 'pointer';
+      numEl.addEventListener('click', () => cycleContract(id, numEl, statusEl));
+      statusEl.addEventListener('click', () => cycleContract(id, numEl, statusEl));
+    });
+  }
+
+  function cycleContract(id, numEl, statusEl) {
+    const current = STATUS_CYCLE.find(s => numEl.classList.contains(s)) || 'green';
+    const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(current) + 1) % STATUS_CYCLE.length];
+    numEl.className = 'cg-num ' + next;
+    statusEl.className = 'cg-status ' + next;
+
+    const edits = getEdits();
+    if (!edits[id]) edits[id] = {};
+    edits[id].status = next;
+    saveEdits(edits);
+  }
+
+  // Init
+  initStatusEditing();
+  initOwnerEditing();
+  initContractEditing();
+  showHint();
+})();
+</script>
 </body>
 </html>
