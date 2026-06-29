@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DoorLoop — Treasury Feature Gap Analysis · June 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:      #162050;
+  --navy-mid:  #1c2d6b;
+  --neon:      #DFFE02;
+  --blue-lt:   #DBEAFF;
+  --blue-mid:  #4A7FD4;
+  --white:     #FFFFFF;
+  --text-dim:  rgba(219,234,255,0.52);
+  --text-mid:  rgba(219,234,255,0.78);
+  --border:    rgba(219,234,255,0.09);
+  --border-md: rgba(219,234,255,0.17);
+  --green:     #4ADE80;
+  --amber:     #FBBF24;
+  --red:       #F87171;
+  --purple:    #C084FC;
+  --cyan:      #38BDF8;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: #0b1220;
+  font-family: 'Inter', sans-serif;
+  color: var(--white);
+  min-height: 100vh;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: var(--navy);
+  border-bottom: 1px solid var(--border);
+  padding: 28px 48px 24px;
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 24px; flex-wrap: wrap;
+}
+.ph-left { display: flex; align-items: center; gap: 20px; }
+.logo-fallback { font-family:'Poppins',sans-serif; font-weight:800; font-size:20px; color:var(--neon); }
+.ph-divider { width:1px; height:36px; background:var(--border-md); flex-shrink:0; }
+.ph-eyebrow { font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--neon); margin-bottom:4px; }
+.ph-title { font-family:'Poppins',sans-serif; font-size:22px; font-weight:700; color:var(--white); line-height:1.2; }
+.ph-sub { font-size:13px; color:var(--text-dim); margin-top:4px; }
+.ph-right { display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+.ph-badge { background:rgba(248,113,113,.15); border:1px solid rgba(248,113,113,.4); color:var(--red); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:5px 12px; border-radius:20px; }
+.ph-meta { font-size:11px; color:var(--text-dim); text-align:right; }
+
+/* ── STATUS LEGEND ── */
+.status-legend {
+  background: #0f1a2e;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 48px;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.sl-heading { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim); }
+.sl-item { display:flex; align-items:center; gap:7px; font-size:11px; font-weight:500; color:var(--text-mid); }
+.sl-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.sl-dot.green  { background:var(--green); }
+.sl-dot.amber  { background:var(--amber); }
+.sl-dot.red    { background:var(--red); }
+.sl-dot.purple { background:var(--purple); }
+.sl-sep { width:1px; height:14px; background:var(--border-md); }
+
+/* ── SCORECARD ── */
+.scorecard {
+  background: linear-gradient(135deg, #111e35, #162050);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin: 32px 48px 0;
+  padding: 28px 32px;
+}
+.sc-title { font-family:'Poppins',sans-serif; font-size:14px; font-weight:700; color:var(--white); margin-bottom:16px; letter-spacing:.02em; }
+.sc-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; }
+.sc-card {
+  border-radius:12px; padding:16px 18px; text-align:center;
+}
+.sc-card.green  { background:rgba(74,222,128,.08); border:1px solid rgba(74,222,128,.25); }
+.sc-card.amber  { background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.25); }
+.sc-card.red    { background:rgba(248,113,113,.08); border:1px solid rgba(248,113,113,.25); }
+.sc-num { font-family:'Poppins',sans-serif; font-size:32px; font-weight:800; line-height:1; margin-bottom:4px; }
+.sc-card.green .sc-num  { color:var(--green); }
+.sc-card.amber .sc-num  { color:var(--amber); }
+.sc-card.red .sc-num    { color:var(--red); }
+.sc-label { font-size:11px; font-weight:600; color:var(--text-mid); text-transform:uppercase; letter-spacing:.08em; }
+
+/* ── CONTENT ── */
+.content {
+  padding: 32px 48px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex; flex-direction: column; gap: 28px;
+}
+
+/* ── SECTION ── */
+.section {
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: #111e35;
+}
+.section-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap:wrap;
+}
+.sh-left { display:flex; align-items:center; gap:12px; }
+.sh-icon { font-size:18px; }
+.sh-title { font-family:'Poppins',sans-serif; font-size:15px; font-weight:700; color:var(--white); }
+.sh-desc { font-size:11px; color:var(--text-dim); }
+.sh-badges { display:flex; gap:6px; flex-wrap:wrap; }
+.sh-badge {
+  font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  padding:3px 10px; border-radius:12px;
+}
+.sh-badge.green  { background:rgba(74,222,128,.12); color:var(--green); border:1px solid rgba(74,222,128,.3); }
+.sh-badge.amber  { background:rgba(251,191,36,.1); color:var(--amber); border:1px solid rgba(251,191,36,.3); }
+.sh-badge.red    { background:rgba(248,113,113,.1); color:var(--red); border:1px solid rgba(248,113,113,.3); }
+
+/* ── FEATURE ROWS ── */
+.feature-list { padding: 0; }
+.feature-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 100px 100px 1fr 120px;
+  gap: 12px;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+  transition: background .15s;
+}
+.feature-row:last-child { border-bottom: none; }
+.feature-row:hover { background: rgba(219,234,255,.02); }
+.feature-row.header {
+  background: rgba(219,234,255,.03);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 10px 24px;
+}
+
+/* Status dot */
+.status-indicator {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
+}
+.status-indicator.green  { background:var(--green); color:var(--green); }
+.status-indicator.amber  { background:var(--amber); color:var(--amber); }
+.status-indicator.red    { background:var(--red); color:var(--red); }
+.status-indicator.na     { background:rgba(219,234,255,.2); color:transparent; box-shadow:none; }
+
+.fr-name { font-size:12.5px; font-weight:600; color:var(--white); line-height:1.3; }
+.fr-scenarios {
+  display:flex; gap:3px; flex-wrap:wrap;
+}
+.fr-sc {
+  width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center;
+  font-size:9px; font-weight:700; color:var(--white);
+}
+.fr-sc.s1 { background:rgba(56,189,248,.2); border:1px solid rgba(56,189,248,.4); }
+.fr-sc.s2 { background:rgba(74,222,128,.2); border:1px solid rgba(74,222,128,.4); }
+.fr-sc.s3 { background:rgba(244,114,182,.2); border:1px solid rgba(244,114,182,.4); }
+
+.fr-status {
+  font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  padding:4px 8px; border-radius:8px; text-align:center; white-space:nowrap;
+}
+.fr-status.live     { background:rgba(74,222,128,.1); color:var(--green); border:1px solid rgba(74,222,128,.25); }
+.fr-status.progress { background:rgba(251,191,36,.1); color:var(--amber); border:1px solid rgba(251,191,36,.25); }
+.fr-status.blocked  { background:rgba(248,113,113,.1); color:var(--red); border:1px solid rgba(248,113,113,.25); }
+.fr-status.future   { background:rgba(192,132,252,.1); color:var(--purple); border:1px solid rgba(192,132,252,.25); }
+.fr-status.na-status { background:rgba(219,234,255,.05); color:var(--text-dim); border:1px solid rgba(219,234,255,.1); }
+
+.fr-gap { font-size:11px; color:var(--text-mid); line-height:1.4; }
+.fr-gap strong { color:var(--white); font-weight:600; }
+
+.fr-owner { font-size:10.5px; color:var(--text-dim); line-height:1.3; }
+
+/* ── CONTRACTUAL FEATURES ── */
+.contract-section {
+  border-radius: 16px;
+  border: 2px solid rgba(248,113,113,.3);
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(248,113,113,.03), #111e35);
+}
+.contract-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(248,113,113,.15);
+  display:flex; align-items:center; gap:12px;
+}
+.ch-icon { font-size:20px; }
+.ch-text { flex:1; }
+.ch-title { font-family:'Poppins',sans-serif; font-size:15px; font-weight:700; color:var(--white); }
+.ch-sub { font-size:11px; color:var(--text-mid); margin-top:2px; }
+.ch-deadline {
+  background:rgba(248,113,113,.15); border:1px solid rgba(248,113,113,.35);
+  color:var(--red); font-size:11px; font-weight:700; padding:6px 14px; border-radius:20px;
+}
+
+.contract-grid {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:0;
+}
+.cg-item {
+  padding:18px 24px; border-right:1px solid var(--border); border-bottom:1px solid var(--border);
+  display:flex; flex-direction:column; gap:8px;
+}
+.cg-item:last-child { border-right:none; }
+.cg-top { display:flex; align-items:center; gap:10px; }
+.cg-num {
+  width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:800; flex-shrink:0;
+}
+.cg-num.green  { background:rgba(74,222,128,.15); color:var(--green); border:1px solid rgba(74,222,128,.3); }
+.cg-num.amber  { background:rgba(251,191,36,.12); color:var(--amber); border:1px solid rgba(251,191,36,.3); }
+.cg-num.red    { background:rgba(248,113,113,.12); color:var(--red); border:1px solid rgba(248,113,113,.3); }
+.cg-name { font-size:12px; font-weight:700; color:var(--white); }
+.cg-status { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+.cg-status.green  { color:var(--green); }
+.cg-status.amber  { color:var(--amber); }
+.cg-status.red    { color:var(--red); }
+.cg-detail { font-size:11px; color:var(--text-dim); line-height:1.45; }
+.cg-consequence {
+  margin-top:auto; padding-top:8px; border-top:1px solid var(--border);
+  font-size:10px; color:rgba(248,113,113,.7); font-weight:600;
+}
+
+/* ── FOOTER ── */
+.page-footer {
+  background:var(--navy); border-top:1px solid var(--border);
+  padding:20px 48px; display:flex;
+  justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+}
+.pf-left { font-size:11px; color:var(--text-dim); }
+.pf-right { font-size:11px; color:var(--text-dim); }
+
+/* ── RESPONSIVE ── */
+@media (max-width:1024px) {
+  .feature-row { grid-template-columns: 28px 1fr 80px 80px 1fr 100px; gap:8px; padding:12px 16px; }
+}
+@media (max-width:768px) {
+  .page-header,.content,.status-legend,.page-footer,.scorecard { padding-left:16px; padding-right:16px; }
+  .feature-row { grid-template-columns: 1fr; gap:6px; }
+  .feature-row.header { display:none; }
+  .contract-grid { grid-template-columns:1fr; }
+  .sc-grid { grid-template-columns:repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <div class="ph-left">
+    <span class="logo-fallback">DoorLoop</span>
+    <div class="ph-divider"></div>
+    <div>
+      <div class="ph-eyebrow">Treasury Feature Gap Analysis</div>
+      <div class="ph-title">Payment Journey — Build vs. Gap Matrix</div>
+      <div class="ph-sub">What Stripe has today vs. what DoorLoop's workflows require, mapped to Maya's 3 scenarios</div>
+    </div>
+  </div>
+  <div class="ph-right">
+    <div class="ph-badge">5 Features at Risk</div>
+    <div class="ph-meta">Prepared for Maya Shoval Sign-off · June 29, 2026</div>
+  </div>
+</header>
+
+<!-- STATUS LEGEND -->
+<div class="status-legend">
+  <span class="sl-heading">Status</span>
+  <div class="sl-item"><div class="sl-dot green"></div>Live / No Gap</div>
+  <div class="sl-sep"></div>
+  <div class="sl-item"><div class="sl-dot amber"></div>In Progress / Tight Timeline</div>
+  <div class="sl-sep"></div>
+  <div class="sl-item"><div class="sl-dot red"></div>Blocked / Critical Risk</div>
+  <div class="sl-sep"></div>
+  <div class="sl-item"><div class="sl-dot purple"></div>Future / Not Contracted</div>
+</div>
+
+<!-- SCORECARD -->
+<div class="scorecard">
+  <div class="sc-title">Coverage Summary — 48 Features Assessed</div>
+  <div class="sc-grid">
+    <div class="sc-card green">
+      <div class="sc-num">30</div>
+      <div class="sc-label">Live / No Gap</div>
+    </div>
+    <div class="sc-card amber">
+      <div class="sc-num">10</div>
+      <div class="sc-label">In Progress</div>
+    </div>
+    <div class="sc-card red">
+      <div class="sc-num">8</div>
+      <div class="sc-label">Blocked / Critical</div>
+    </div>
+  </div>
+</div>
+
+<main class="content">
+
+<!-- ═══════════════════════════════════════
+     CONTRACTUAL FEATURES (TOP PRIORITY)
+═══════════════════════════════════════ -->
+<div class="contract-section">
+  <div class="contract-header">
+    <div class="ch-icon">⚠️</div>
+    <div class="ch-text">
+      <div class="ch-title">5 Contractual Feature Commitments (FA Fee Schedule Section 3)</div>
+      <div class="ch-sub">If ANY feature misses deadline: no $10K/mo SaaS fee + DoorLoop can go to Increase (loss of exclusivity)</div>
+    </div>
+    <div class="ch-deadline">Deadline: Dec 31, 2026</div>
+  </div>
+  <div class="contract-grid">
+    <div class="cg-item">
+      <div class="cg-top">
+        <div class="cg-num red">1</div>
+        <div class="cg-name">FDIC-Insured DDAs</div>
+      </div>
+      <div class="cg-status red">AT RISK — No Timeline</div>
+      <div class="cg-detail">True demand deposit accounts (not VBAN pass-through). Awaiting partner bank (Fifth Third / Lead Bank) confirmation. No engineering work started. No confirmed path to Dec 31.</div>
+      <div class="cg-consequence">DRI: Steven McMurray / Ariane Chee</div>
+    </div>
+    <div class="cg-item">
+      <div class="cg-top">
+        <div class="cg-num amber">2</div>
+        <div class="cg-name">Real-Time Payments (In + Out)</div>
+      </div>
+      <div class="cg-status amber">IN PROGRESS — Tight</div>
+      <div class="cg-detail">RTP not available for T4P today. Infrastructure exists at Fifth Third. Product says Q2 final testing for v1 FAs, Q3 mid-Aug for v1 payments balance (Wells). Pricing TBD.</div>
+      <div class="cg-consequence">DRI: Treasury Product / Sam Kansara</div>
+    </div>
+    <div class="cg-item">
+      <div class="cg-top">
+        <div class="cg-num green">3</div>
+        <div class="cg-name">Check Send</div>
+      </div>
+      <div class="cg-status green">ON TRACK</div>
+      <div class="cg-detail">Private preview Jun 15. Native build (Increase + Grasshopper partners). Requires v2 interop. Pricing: $2/check standard, negotiable to $1.40. DoorLoop's current: $1.79 (Checkbook.io).</div>
+      <div class="cg-consequence">DRI: Adit Patel / Sam Kansara</div>
+    </div>
+    <div class="cg-item">
+      <div class="cg-top">
+        <div class="cg-num red">4</div>
+        <div class="cg-name">1099-INT + Account Statements</div>
+      </div>
+      <div class="cg-status red">BEHIND — Highest Risk</div>
+      <div class="cg-detail">DoorLoop is in the 4th and FINAL rollout segment (v1 FA for Platforms). Not started. No timeline. Consumer Wallet launched May 13 (Remitly first). This segment has no concrete plan.</div>
+      <div class="cg-consequence">DRI: Jinhao Ping / Sam Kansara</div>
+    </div>
+    <div class="cg-item">
+      <div class="cg-top">
+        <div class="cg-num amber">5</div>
+        <div class="cg-name">Interest Sharing (Cash Rewards)</div>
+      </div>
+      <div class="cg-status amber">IN PROGRESS — v1 Aug 31</div>
+      <div class="cg-detail">v2 private preview live. v1 (DoorLoop's version) target Aug 31. Structured as "cash reward" not interest (regulatory). Platform must fund payouts from own FA. Cannot tie % to AFF.</div>
+      <div class="cg-consequence">DRI: Jinhao Ping / Ariane Chee</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 1: COLLECTION & SWEEP
+═══════════════════════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div class="sh-left">
+      <span class="sh-icon">⚡</span>
+      <div>
+        <div class="sh-title">Collection & Sweep (Tenant → Wallet)</div>
+        <div class="sh-desc">How rent payments are collected and moved into DoorLoop Wallets</div>
+      </div>
+    </div>
+    <div class="sh-badges">
+      <span class="sh-badge green">7 Live</span>
+      <span class="sh-badge amber">2 In Progress</span>
+    </div>
+  </div>
+  <div class="feature-list">
+    <div class="feature-row header">
+      <div></div><div>Feature</div><div>Scenarios</div><div>Status</div><div>Gap / Notes</div><div>Owner</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">ACH Rent Collection</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">No gap. 80% of PIV. Fully operational.</div>
+      <div class="fr-owner">N/A</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Card Rent Collection</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">No gap. 14% of PIV via card. Payment Element (OCS).</div>
+      <div class="fr-owner">N/A</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">T+1 ACH Settlement (Accelerated)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">Enabled Apr 15. Funds available T+0 19:00 ET.</div>
+      <div class="fr-owner">Complete</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">T+1 Card Settlement</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status progress">Pricing TBD</div>
+      <div class="fr-gap"><strong>Pricing gap:</strong> Gated in free historically. Never signed into renewal. Need to formalize or charge.</div>
+      <div class="fr-owner">Omri / Shayne</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Auto-Sweep to FA (Payout to Treasury)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">FA set as default external account. Auto-payout sweeps funds.</div>
+      <div class="fr-owner">Complete</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Radar ACH Risk Scoring</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">Decline + risk scores operational. Contractually free until Treasury features delivered.</div>
+      <div class="fr-owner">N/A</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">RTP Inbound (Tenant pays instant)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status blocked">Not Available</div>
+      <div class="fr-gap"><strong>Contractual commitment.</strong> Not available for T4P today. In final testing Q2 for v1 FAs (Fifth Third).</div>
+      <div class="fr-owner">Treasury Product</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">Remote Check Deposit (RDC)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status progress">Beta (gated)</div>
+      <div class="fr-gap"><strong>60% of DoorLoop check volume.</strong> Closed beta. Requires Mitek SDK + Fifth Third approval. High value.</div>
+      <div class="fr-owner">Treasury Product</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Financial Connections (Bank Verification)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">Active for risk scoring and bank account verification.</div>
+      <div class="fr-owner">N/A</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 2: WALLET FUNCTIONALITY
+═══════════════════════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div class="sh-left">
+      <span class="sh-icon">💼</span>
+      <div>
+        <div class="sh-title">Wallet Functionality (FA Operations)</div>
+        <div class="sh-desc">Financial Account creation, balances, multi-wallet, and yield</div>
+      </div>
+    </div>
+    <div class="sh-badges">
+      <span class="sh-badge green">8 Live</span>
+      <span class="sh-badge red">1 Critical</span>
+      <span class="sh-badge amber">1 Needs Approval</span>
+    </div>
+  </div>
+  <div class="feature-list">
+    <div class="feature-row header">
+      <div></div><div>Feature</div><div>Scenarios</div><div>Status</div><div>Gap / Notes</div><div>Owner</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">FA Creation (per CA)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">~15,678 FAs live. 90% of eligible CAs onboarded.</div>
+      <div class="fr-owner">Complete</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Multiple FAs per CA (2 Wallets)</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">Default limit 3 per CA. Sufficient for Scenario 2 (Pooled + LLC).</div>
+      <div class="fr-owner">N/A</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">Multiple FAs per CA (5+ Wallets)</div>
+      <div class="fr-scenarios"><span class="fr-sc s3">3</span></div>
+      <div class="fr-status progress">Needs Approval</div>
+      <div class="fr-gap"><strong>Risk Review required</strong> for 4+ FAs. Dashboard breaks >10. Max 1000. DoorLoop uses custom UI.</div>
+      <div class="fr-owner">Risk Team</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">AFF / Yield (EFFR - 30bps)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">EOD balance calculation. Enabled Apr 7-10. Revenue flowing.</div>
+      <div class="fr-owner">Complete</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">FDIC Pass-Through (VBAN Model)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">Pass-through eligible via FBO. $250K per entity limit. Not true DDA (see contractual feature #1).</div>
+      <div class="fr-owner">N/A</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator red"></div>
+      <div class="fr-name">FDIC-Insured DDAs (True Deposit)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status blocked">Not Available</div>
+      <div class="fr-gap"><strong>Contractual Feature #1.</strong> No confirmed path. Partner bank confirmation pending. No engineering started.</div>
+      <div class="fr-owner">Steven McMurray</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Inter-FA Transfers (FA ↔ FA)</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">Intra-platform credit (push). Instant via Stripe network. Free.</div>
+      <div class="fr-owner">N/A</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Topups API (Instant FA → Payments Balance)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">Instant fund recovery for negative balances. Operational.</div>
+      <div class="fr-owner">Complete</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Auto-Debit from FA (Negative Balance)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">Runs midnight UTC. Supplemented by Topups for immediate recovery.</div>
+      <div class="fr-owner">N/A</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Closing FAs (PM Off-boarding)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">API available. 75-day inactivity or forwarding account. Irreversible.</div>
+      <div class="fr-owner">N/A</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 3: OUTBOUND PAYMENTS
+═══════════════════════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div class="sh-left">
+      <span class="sh-icon">💸</span>
+      <div>
+        <div class="sh-title">Outbound Payments (Wallet → Destinations)</div>
+        <div class="sh-desc">Owner distributions, vendor payments, PM withdrawals, checks</div>
+      </div>
+    </div>
+    <div class="sh-badges">
+      <span class="sh-badge green">5 Live</span>
+      <span class="sh-badge amber">3 In Progress</span>
+    </div>
+  </div>
+  <div class="feature-list">
+    <div class="feature-row header">
+      <div></div><div>Feature</div><div>Scenarios</div><div>Status</div><div>Gap / Notes</div><div>Owner</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Bank Withdrawal (PM → Own Account)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">OutboundTransfers via Same Day ACH. Operational.</div>
+      <div class="fr-owner">Complete</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Owner Distributions (ACH)</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">OutboundPayments (me-to-other) via ACH. PPD SEC code for consumer payouts.</div>
+      <div class="fr-owner">Phase 2</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Vendor Payments (ACH)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">OutboundPayments via ACH to vendor bank accounts.</div>
+      <div class="fr-owner">Phase 2</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Vendor Payments (Wire — Urgent)</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">Domestic wires available same-day before cutoff. Higher cost than ACH.</div>
+      <div class="fr-owner">Available</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Check Send (Printed Checks)</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">On Track</div>
+      <div class="fr-gap"><strong>Contractual #3.</strong> Private preview Jun 15. Pricing negotiation needed ($2 vs $1.79 Checkbook.io).</div>
+      <div class="fr-owner">Adit Patel</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">RTP Outbound (Instant Payments)</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status blocked">Not Available</div>
+      <div class="fr-gap"><strong>Contractual #2.</strong> Not available for T4P. Closest alt: wire (same-day) or Instant Payouts from Payments balance.</div>
+      <div class="fr-owner">Treasury Product</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">Global Payouts (Cross-Border)</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status progress">Pricing TBD</div>
+      <div class="fr-gap"><strong>Feature available</strong> (ungated US since Sep 2025). Blocker is commercial: pricing not set, Deal Composer issue.</div>
+      <div class="fr-owner">Omri / Shayne</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Payment Method Cloning (Vendors)</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Live</div>
+      <div class="fr-gap">Core cloning GA. Skip verification (private feature) needs enablement.</div>
+      <div class="fr-owner">Josh Wortsman</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 4: INBOUND TRANSFERS
+═══════════════════════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div class="sh-left">
+      <span class="sh-icon">📥</span>
+      <div>
+        <div class="sh-title">Inbound Transfers (External → Wallet)</div>
+        <div class="sh-desc">Top-ups when FA balance is insufficient for outgoing payments</div>
+      </div>
+    </div>
+    <div class="sh-badges">
+      <span class="sh-badge red">2 Blocked</span>
+      <span class="sh-badge amber">2 In Progress</span>
+    </div>
+  </div>
+  <div class="feature-list">
+    <div class="feature-row header">
+      <div></div><div>Feature</div><div>Scenarios</div><div>Status</div><div>Gap / Notes</div><div>Owner</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator red"></div>
+      <div class="fr-name">Standard ACH Inbound Transfer</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status blocked">Active Blocker</div>
+      <div class="fr-gap"><strong>~10K legacy ba_ objects can't initiate IBTs.</strong> Skip verification gate needed. TREASURY_FEATURES-4978 + FRAUDOPS-41434. Ori personally escalated.</div>
+      <div class="fr-owner">Josh / Rohit / Shayne</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator red"></div>
+      <div class="fr-name">Faster IBT (Insufficient Funds Permission)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status blocked">Blocked</div>
+      <div class="fr-gap"><strong>Recovery/clawback use case.</strong> CREDIT_UW-84458 (Critical). Original NSAC-8915 auto-closed without review.</div>
+      <div class="fr-owner">Shayne / Credit Risk</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">Same-Day ACH Inbound</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status progress">Not Enabled</div>
+      <div class="fr-gap">Gate exists + credit underwriting required. Standard 2-6 day ACH may be acceptable. Lower priority.</div>
+      <div class="fr-owner">Credit Risk</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">KYC API Raw Bank Details Access</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status progress">Near Complete</div>
+      <div class="fr-gap">Final step: Dimitry (Israel TZ) confirming IP allowlist + expand parameter. Days away from resolution.</div>
+      <div class="fr-owner">Rohit / Dimitry</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 5: INTEREST & TAX
+═══════════════════════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div class="sh-left">
+      <span class="sh-icon">📊</span>
+      <div>
+        <div class="sh-title">Interest Sharing & Tax Reporting</div>
+        <div class="sh-desc">Yield distribution to PMs and regulatory compliance</div>
+      </div>
+    </div>
+    <div class="sh-badges">
+      <span class="sh-badge red">2 Critical</span>
+      <span class="sh-badge amber">2 In Progress</span>
+    </div>
+  </div>
+  <div class="feature-list">
+    <div class="feature-row header">
+      <div></div><div>Feature</div><div>Scenarios</div><div>Status</div><div>Gap / Notes</div><div>Owner</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">Interest Sharing / Cash Rewards</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status progress">v1 Aug 31</div>
+      <div class="fr-gap"><strong>Contractual #5.</strong> v2 preview live. v1 target Aug 31. Structured as "cash reward." Platform funds payouts from own FA.</div>
+      <div class="fr-owner">Jinhao Ping</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator red"></div>
+      <div class="fr-name">1099-INT Tax Forms</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status blocked">Not Available</div>
+      <div class="fr-gap"><strong>Contractual #4. HIGHEST RISK.</strong> DoorLoop is 4th/final rollout segment. Not started. No timeline. Platform responsibility today.</div>
+      <div class="fr-owner">Jinhao Ping</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator red"></div>
+      <div class="fr-name">FA Account Statements (Monthly PDF)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status blocked">Closed Beta</div>
+      <div class="fr-gap"><strong>Contractual #4 (bundled).</strong> Closed beta, not accepting new users. DoorLoop would need to build own statement generation.</div>
+      <div class="fr-owner">Jinhao Ping</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">Embedded Cash Rewards Display</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status progress">Blocked by v1</div>
+      <div class="fr-gap">Dependent on Interest Sharing being available for v1 (target Aug 31).</div>
+      <div class="fr-owner">Jinhao Ping</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 6: CARD ISSUING
+═══════════════════════════════════════ -->
+<section class="section">
+  <div class="section-header">
+    <div class="sh-left">
+      <span class="sh-icon">💳</span>
+      <div>
+        <div class="sh-title">Card Issuing (Future — Vendor Cards)</div>
+        <div class="sh-desc">Virtual cards for vendor payments funded from FA</div>
+      </div>
+    </div>
+    <div class="sh-badges">
+      <span class="sh-badge green">3 On Track</span>
+    </div>
+  </div>
+  <div class="feature-list">
+    <div class="feature-row header">
+      <div></div><div>Feature</div><div>Scenarios</div><div>Status</div><div>Gap / Notes</div><div>Owner</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Card Issuing (Virtual Cards)</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status future">Feb 2027</div>
+      <div class="fr-gap"><strong>No product gap.</strong> Issuing is GA. Contractual deadline Feb 1, 2027. Integration not started (waiting for FA stability).</div>
+      <div class="fr-owner">Colin Morgan / Maya</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Real-Time Authorization (Balance Check)</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status future">DL Builds</div>
+      <div class="fr-gap">DoorLoop builds webhook handler for balance checks. Standard Issuing pattern. No product gap.</div>
+      <div class="fr-owner">DoorLoop Eng</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator green"></div>
+      <div class="fr-name">Issuing Revenue Share (80% Interchange)</div>
+      <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status live">Contracted</div>
+      <div class="fr-gap">Per Issuing Fee Schedule Section 3. Signed Jan 9, 2026. 60-month term.</div>
+      <div class="fr-owner">N/A</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 7: IMMEDIATE ACTIONS
+═══════════════════════════════════════ -->
+<section class="section" style="border-color:rgba(248,113,113,.25);">
+  <div class="section-header" style="background:rgba(248,113,113,.03);">
+    <div class="sh-left">
+      <span class="sh-icon">🚨</span>
+      <div>
+        <div class="sh-title">Immediate Actions Required</div>
+        <div class="sh-desc">Items needing resolution before Jul 13 Leadership Conversation</div>
+      </div>
+    </div>
+  </div>
+  <div class="feature-list">
+    <div class="feature-row header">
+      <div></div><div>Action</div><div>Scenarios</div><div>Status</div><div>What's Needed</div><div>Owner</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator red"></div>
+      <div class="fr-name">IBT Skip Verification Gate</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status blocked">URGENT</div>
+      <div class="fr-gap">~10K CAs blocked. Ori personally escalated. FRAUDOPS-41434 risk review submitted. RJW asked clarifying Qs 6/24.</div>
+      <div class="fr-owner">Josh / Rohit</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator red"></div>
+      <div class="fr-name">H2 Radar Repricing Exclusion</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status blocked">Before Jul 15</div>
+      <div class="fr-gap">Radar repackaging comms Jul 15-23. ACH scores contractually free. jporfilio says NOT excluded. Need manual override.</div>
+      <div class="fr-owner">Shayne / jporfilio</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator red"></div>
+      <div class="fr-name">13 CAs Treasury-Ineligible MCC</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status blocked">HIGH</div>
+      <div class="fr-gap">RUN_MAAS_COMPLIANCE-10112. 11 MCC 6513, 2 MCC 8999. Batch override filed citing precedent.</div>
+      <div class="fr-owner">Rohit / Risk</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator red"></div>
+      <div class="fr-name">Escalate Feature #4 (1099-INT/Statements)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status blocked">No Timeline</div>
+      <div class="fr-gap">Highest risk contractual feature. DoorLoop is last segment. Need product escalation path and timeline commitment.</div>
+      <div class="fr-owner">Shayne / Lauren</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">KYC API Confirmation (Dimitry)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status progress">Days Away</div>
+      <div class="fr-gap">Final step: IP allowlist + expand parameter. Dimitry in Israel TZ. Ping Mon if no response.</div>
+      <div class="fr-owner">Rohit / Dimitry</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="page-footer">
+  <div class="pf-left">DoorLoop · Stripe Account Team · Shayne Mullen · Gap Analysis v1 · June 29, 2026</div>
+  <div class="pf-right">Confidential — Prepared for Maya Shoval Sign-off & Jul 13 Leadership Conversation</div>
+</footer>
+
+</body>
+</html>
