@@ -318,18 +318,18 @@ body {
 
 <!-- SCORECARD -->
 <div class="scorecard">
-  <div class="sc-title">Coverage Summary — 48 Features Assessed</div>
+  <div class="sc-title">Coverage Summary — <span id="sc-total">48</span> Features Assessed</div>
   <div class="sc-grid">
     <div class="sc-card green">
-      <div class="sc-num">30</div>
+      <div class="sc-num" id="sc-green">30</div>
       <div class="sc-label">Live / No Gap</div>
     </div>
     <div class="sc-card amber">
-      <div class="sc-num">10</div>
+      <div class="sc-num" id="sc-amber">10</div>
       <div class="sc-label">In Progress</div>
     </div>
     <div class="sc-card red">
-      <div class="sc-num">8</div>
+      <div class="sc-num" id="sc-red">8</div>
       <div class="sc-label">Blocked / Critical</div>
     </div>
   </div>
@@ -1049,6 +1049,7 @@ body {
     if (!edits[id]) edits[id] = {};
     edits[id].status = next;
     saveEdits(edits);
+    recountScorecard();
   }
 
   // ─── OWNER EDITING ───
@@ -1109,6 +1110,26 @@ body {
     if (!edits[id]) edits[id] = {};
     edits[id].status = next;
     saveEdits(edits);
+    recountScorecard();
+  }
+
+  // ─── SCORECARD RECOUNT ───
+  function recountScorecard() {
+    let g = 0, a = 0, r = 0;
+    document.querySelectorAll('.feature-row:not(.header) .status-indicator').forEach(dot => {
+      if (dot.classList.contains('green')) g++;
+      else if (dot.classList.contains('amber')) a++;
+      else if (dot.classList.contains('red')) r++;
+    });
+    const total = g + a + r;
+    const elG = document.getElementById('sc-green');
+    const elA = document.getElementById('sc-amber');
+    const elR = document.getElementById('sc-red');
+    const elT = document.getElementById('sc-total');
+    if (elG) elG.textContent = g;
+    if (elA) elA.textContent = a;
+    if (elR) elR.textContent = r;
+    if (elT) elT.textContent = total;
   }
 
   // ─── HINT ───
@@ -1169,6 +1190,7 @@ body {
         statusEl.className = 'cg-status ' + edits[id].status;
       }
     });
+    recountScorecard();
   }
 
   // ─── INIT ───
@@ -1176,6 +1198,7 @@ body {
     initStatusEditing(edits);
     initOwnerEditing(edits);
     initContractEditing(edits);
+    recountScorecard();
     showHint();
     startPolling();
   });
