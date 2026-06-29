@@ -5,8 +5,11 @@
     },
     "13_CAs_Treasury-Ineligible_MCC": {
       "status": "green"
+    },
+    "KYC_API_Raw_Bank_Details_Access": {
+      "status": "red"
     }
   },
-  "lastUpdated": "2026-06-29T15:12:14.820Z",
+  "lastUpdated": "2026-06-29T21:05:20.972Z",
   "updatedBy": "anonymous"
 }
