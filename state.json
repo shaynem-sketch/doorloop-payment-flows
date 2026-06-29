@@ -2,8 +2,11 @@
   "edits": {
     "H2_Radar_Repricing_Exclusion": {
       "status": "green"
+    },
+    "13_CAs_Treasury-Ineligible_MCC": {
+      "status": "green"
     }
   },
-  "lastUpdated": "2026-06-29T15:09:49.847Z",
+  "lastUpdated": "2026-06-29T15:12:14.820Z",
   "updatedBy": "anonymous"
 }
