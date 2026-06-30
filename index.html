@@ -181,6 +181,76 @@ body {
 </head>
 <body>
 
+<!-- PASSWORD GATE -->
+<div id="authGate" style="position:fixed;inset:0;z-index:10000;background:#0b1220;display:flex;align-items:center;justify-content:center;">
+  <div style="background:#111e35;border:1px solid rgba(219,234,255,.09);border-radius:16px;padding:40px 36px;max-width:380px;width:90%;text-align:center;">
+    <div style="font-family:'Poppins',sans-serif;font-weight:800;font-size:20px;color:#DFFE02;margin-bottom:6px;">DoorLoop</div>
+    <div style="font-size:13px;color:rgba(219,234,255,.6);margin-bottom:24px;">Payment Flows & Gap Analysis</div>
+    <div style="font-size:11px;color:rgba(219,234,255,.4);margin-bottom:12px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;">Enter password to continue</div>
+    <input id="authInput" type="password" placeholder="Password" style="width:100%;padding:12px 16px;border-radius:10px;border:1px solid rgba(219,234,255,.17);background:rgba(219,234,255,.05);color:#fff;font-size:14px;font-family:'Inter',sans-serif;outline:none;margin-bottom:12px;" autocomplete="off">
+    <button id="authBtn" style="width:100%;padding:12px;border-radius:10px;border:none;background:#DFFE02;color:#0b1220;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.03em;">Access</button>
+    <div id="authError" style="margin-top:12px;font-size:11px;color:#F87171;display:none;">Incorrect password</div>
+    <div style="margin-top:20px;font-size:10px;color:rgba(219,234,255,.3);">Stripe Confidential</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const AUTH_KEY = 'doorloop_auth_v1';
+  const gate = document.getElementById('authGate');
+
+  // Check if already authenticated this session
+  if (sessionStorage.getItem(AUTH_KEY) === 'true') {
+    gate.style.display = 'none';
+    return;
+  }
+
+  const input = document.getElementById('authInput');
+  const btn = document.getElementById('authBtn');
+  const err = document.getElementById('authError');
+
+  async function tryAuth() {
+    const pw = input.value;
+    if (!pw) return;
+    btn.textContent = '...';
+
+    // Try server-side auth first (Vercel deployed)
+    const isLocal = window.location.hostname === 'localhost' || window.location.protocol === 'file:';
+    if (!isLocal) {
+      try {
+        const resp = await fetch('/api/auth', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pw })
+        });
+        const data = await resp.json();
+        if (data.authenticated) {
+          sessionStorage.setItem(AUTH_KEY, 'true');
+          gate.style.display = 'none';
+          return;
+        }
+      } catch (e) {}
+    }
+
+    // Fallback: client-side check (for local dev)
+    if (pw === 'Tr3@sury!DL-2026x') {
+      sessionStorage.setItem(AUTH_KEY, 'true');
+      gate.style.display = 'none';
+      return;
+    }
+
+    err.style.display = 'block';
+    btn.textContent = 'Access';
+    input.value = '';
+    input.focus();
+  }
+
+  btn.addEventListener('click', tryAuth);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') tryAuth(); });
+  input.focus();
+})();
+</script>
+
 <!-- GLOBAL HEADER -->
 <header class="global-header">
   <div class="gh-left">
