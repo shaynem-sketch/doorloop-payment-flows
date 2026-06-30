@@ -11,8 +11,11 @@
     },
     "KYC_API_Confirmation_(Dimitry)": {
       "status": "green"
+    },
+    "T+1_Card_Settlement": {
+      "status": "amber"
     }
   },
-  "lastUpdated": "2026-06-29T21:05:44.476Z",
+  "lastUpdated": "2026-06-30T13:45:12.734Z",
   "updatedBy": "anonymous"
 }
