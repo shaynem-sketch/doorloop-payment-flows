@@ -17,8 +17,11 @@
     },
     "Standard_ACH_Inbound_Transfer": {
       "status": "green"
+    },
+    "IBT_Skip_Verification_Gate": {
+      "status": "green"
     }
   },
-  "lastUpdated": "2026-07-06T18:48:02.483Z",
+  "lastUpdated": "2026-07-06T18:48:11.061Z",
   "updatedBy": "anonymous"
 }
