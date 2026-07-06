@@ -14,8 +14,11 @@
     },
     "T+1_Card_Settlement": {
       "status": "amber"
+    },
+    "Standard_ACH_Inbound_Transfer": {
+      "status": "green"
     }
   },
-  "lastUpdated": "2026-06-30T13:45:12.734Z",
+  "lastUpdated": "2026-07-06T18:48:02.483Z",
   "updatedBy": "anonymous"
 }
