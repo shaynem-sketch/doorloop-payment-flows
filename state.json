@@ -29,8 +29,11 @@
     },
     "contract_Interest_Sharing_(Cash_Rewards": {
       "status": "amber"
+    },
+    "contract_FDIC-Insured_DDAs": {
+      "status": "green"
     }
   },
-  "lastUpdated": "2026-07-08T22:23:51.464Z",
+  "lastUpdated": "2026-07-10T18:38:33.826Z",
   "updatedBy": "anonymous"
 }
