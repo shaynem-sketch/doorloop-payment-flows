@@ -31,9 +31,9 @@
       "status": "amber"
     },
     "contract_FDIC-Insured_DDAs": {
-      "status": "green"
+      "status": "amber"
     }
   },
-  "lastUpdated": "2026-07-10T18:38:33.826Z",
+  "lastUpdated": "2026-07-10T18:38:35.727Z",
   "updatedBy": "anonymous"
 }
