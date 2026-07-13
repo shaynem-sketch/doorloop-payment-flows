@@ -1,39 +1,39 @@
 {
   "edits": {
-    "H2_Radar_Repricing_Exclusion": {
-      "status": "green"
-    },
-    "13_CAs_Treasury-Ineligible_MCC": {
-      "status": "green"
-    },
-    "KYC_API_Raw_Bank_Details_Access": {
-      "status": "green"
-    },
-    "KYC_API_Confirmation_(Dimitry)": {
-      "status": "green"
-    },
-    "T+1_Card_Settlement": {
-      "status": "amber"
-    },
     "Standard_ACH_Inbound_Transfer": {
       "status": "green"
     },
     "IBT_Skip_Verification_Gate": {
       "status": "green"
     },
-    "Inter-FA_Transfers_(FA_↔_FA)": {
-      "owner": "N/A"
-    },
-    "Multiple_FAs_per_CA_(2_Wallets)": {
+    "H2_Radar_Repricing_Exclusion": {
       "status": "green"
     },
-    "contract_Interest_Sharing_(Cash_Rewards": {
+    "13_CAs_Treasury-Ineligible_MCC": {
+      "status": "green"
+    },
+    "Raw_Bank_Details_API_Access": {
+      "status": "green"
+    },
+    "KYC_API_Raw_Bank_Details_Access": {
+      "status": "green"
+    },
+    "FA_Creation_(per_CA)": {
+      "status": "amber"
+    },
+    "AFF_/_Yield_(EFFR_-_30bps)": {
+      "status": "amber"
+    },
+    "Auto-Sweep_to_FA_(Payout_to_Treasury)": {
       "status": "amber"
     },
     "contract_FDIC-Insured_DDAs": {
       "status": "amber"
+    },
+    "contract_Interest_Sharing_(Cash_Rewards": {
+      "status": "amber"
     }
   },
-  "lastUpdated": "2026-07-10T18:38:35.727Z",
-  "updatedBy": "anonymous"
+  "lastUpdated": "2026-07-13T14:00:00.000Z",
+  "updatedBy": "shaynem"
 }

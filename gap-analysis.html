@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DoorLoop — Treasury Feature Gap Analysis · June 2026</title>
+<title>DoorLoop — Treasury Feature Gap Analysis · July 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -299,8 +299,8 @@ body {
     </div>
   </div>
   <div class="ph-right">
-    <div class="ph-badge">5 Features at Risk</div>
-    <div class="ph-meta">Prepared for Maya Shoval Sign-off · June 29, 2026</div>
+    <div class="ph-badge">V1 Rolled Back · V2 Testing Active</div>
+    <div class="ph-meta">Updated Jul 13, 2026 · Leadership Conversation Today</div>
   </div>
 </header>
 
@@ -355,26 +355,26 @@ body {
         <div class="cg-num red">1</div>
         <div class="cg-name">FDIC-Insured DDAs</div>
       </div>
-      <div class="cg-status red">AT RISK — No Timeline</div>
-      <div class="cg-detail">True demand deposit accounts (not VBAN pass-through). Awaiting partner bank confirmation. No engineering work started. No confirmed path to Dec 31.</div>
-      <div class="cg-consequence">DRI: Stacey Wong (TBD)</div>
+      <div class="cg-status amber">AT RISK — Fifth Third Timeline Uncertain</div>
+      <div class="cg-detail">True demand deposit accounts (not VBAN pass-through). Awaiting Fifth Third / Lead Bank confirmation. FDIC pass-through (VBAN) enabled for all 20K CAs. True DDA path still unclear.</div>
+      <div class="cg-consequence">DRI: Steven McMurray / Ariane Chee</div>
     </div>
     <div class="cg-item">
       <div class="cg-top">
         <div class="cg-num amber">2</div>
         <div class="cg-name">Real-Time Payments (In + Out)</div>
       </div>
-      <div class="cg-status amber">IN PROGRESS — Tight</div>
-      <div class="cg-detail">RTP not available for Treasury for Platforms today. Infrastructure exists at Fifth Third. In final testing for v1 FAs. Pricing TBD.</div>
-      <div class="cg-consequence">DRI: Sam Kansara</div>
+      <div class="cg-status amber">IN PROGRESS — Target Sep 30 Inbound</div>
+      <div class="cg-detail">RTP not available for T4P today. Infrastructure exists at Fifth Third. Inbound target Sep 30. Outbound timeline TBD. Pricing not finalized. Directly relevant to LPM product roadmap.</div>
+      <div class="cg-consequence">DRI: Treasury Product / Sam Kansara</div>
     </div>
     <div class="cg-item">
       <div class="cg-top">
         <div class="cg-num green">3</div>
         <div class="cg-name">Check Send</div>
       </div>
-      <div class="cg-status green">ON TRACK</div>
-      <div class="cg-detail">Private preview launched Jun 15. Native build. Pricing: $2/check standard, negotiable. DoorLoop's current vendor costs $1.79.</div>
+      <div class="cg-status green">ON TRACK — Private Preview Live</div>
+      <div class="cg-detail">Private preview launched Jun 15. Native build (Increase + Grasshopper). Maya estimates 800-900 checks/month per PM, 30K total expenses. Pricing: $2 standard vs. DoorLoop's $1.79 (Checkbook.io). Logo customization requested.</div>
       <div class="cg-consequence">DRI: Adit Patel / Sam Kansara</div>
     </div>
     <div class="cg-item">
@@ -382,8 +382,8 @@ body {
         <div class="cg-num red">4</div>
         <div class="cg-name">1099-INT + Account Statements</div>
       </div>
-      <div class="cg-status red">BEHIND — Highest Risk</div>
-      <div class="cg-detail">DoorLoop is in the 4th and final rollout segment (v1 FA for Platforms). Not started. No timeline. This segment has no concrete plan.</div>
+      <div class="cg-status red">BEHIND — Highest Risk (No Timeline)</div>
+      <div class="cg-detail">DoorLoop is in the 4th/final rollout segment (v1 FA for Platforms). Not started. No concrete plan for this segment. Consumer Wallet launched May 13 (Remitly first). Escalation path needed.</div>
       <div class="cg-consequence">DRI: Jinhao Ping / Sam Kansara</div>
     </div>
     <div class="cg-item">
@@ -391,8 +391,8 @@ body {
         <div class="cg-num amber">5</div>
         <div class="cg-name">Interest Sharing (Cash Rewards)</div>
       </div>
-      <div class="cg-status amber">IN PROGRESS — v1 Aug 31</div>
-      <div class="cg-detail">v2 private preview live. v1 (DoorLoop's version) target Aug 31. Structured as "cash reward" not interest (regulatory).</div>
+      <div class="cg-status amber">IN PROGRESS — v2 Preview Live, v1 Aug 31</div>
+      <div class="cg-detail">v2 private preview live. v1 (DoorLoop's current version) target Aug 31. Structured as "cash reward" not interest (regulatory). Platform must fund payouts from own FA. Cannot tie % to AFF rate.</div>
       <div class="cg-consequence">DRI: Jinhao Ping / Ariane Chee</div>
     </div>
   </div>
@@ -411,8 +411,8 @@ body {
       </div>
     </div>
     <div class="sh-badges">
-      <span class="sh-badge green">7 Live</span>
-      <span class="sh-badge amber">2 In Progress</span>
+      <span class="sh-badge green">6 Live</span>
+      <span class="sh-badge amber">3 In Progress</span>
     </div>
   </div>
   <div class="feature-list">
@@ -455,9 +455,9 @@ body {
       <div class="status-indicator green"></div>
       <div class="fr-name">Auto-Sweep to FA (Payout to Treasury)</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status live">Live</div>
-      <div class="fr-gap">FA set as default external account. Auto-payout sweeps funds.</div>
-      <div class="fr-owner">Complete</div>
+      <div class="fr-status progress">V1 Rolled Back</div>
+      <div class="fr-gap"><strong>V1 rollback:</strong> Only ~1K of 18K CAs still active on V1. DoorLoop rolled back due to FAF calculation bug + silent retry failures. V2 testing underway as replacement path.</div>
+      <div class="fr-owner">DoorLoop Eng / Furst</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator green"></div>
@@ -471,9 +471,9 @@ body {
       <div class="status-indicator amber"></div>
       <div class="fr-name">RTP Inbound (Tenant pays instant)</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status blocked">Not Available</div>
-      <div class="fr-gap"><strong>Contractual commitment.</strong> Not available for Treasury for Platforms today. In final testing.</div>
-      <div class="fr-owner">Sam Kansara</div>
+      <div class="fr-status progress">Target Sep 30</div>
+      <div class="fr-gap"><strong>Contractual commitment #2.</strong> Not available for T4P today. Target Sep 30 for inbound (Fifth Third infrastructure). Pricing TBD.</div>
+      <div class="fr-owner">Treasury Product / Sam Kansara</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator amber"></div>
@@ -507,9 +507,9 @@ body {
       </div>
     </div>
     <div class="sh-badges">
-      <span class="sh-badge green">8 Live</span>
+      <span class="sh-badge green">6 Live</span>
+      <span class="sh-badge amber">3 In Progress (V1→V2)</span>
       <span class="sh-badge red">1 Critical</span>
-      <span class="sh-badge amber">1 Needs Approval</span>
     </div>
   </div>
   <div class="feature-list">
@@ -520,9 +520,9 @@ body {
       <div class="status-indicator green"></div>
       <div class="fr-name">FA Creation (per CA)</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status live">Live</div>
-      <div class="fr-gap">~15,678 FAs live. 90% of eligible CAs onboarded.</div>
-      <div class="fr-owner">Complete</div>
+      <div class="fr-status progress">V1 Rolled Back → V2 Testing</div>
+      <div class="fr-gap"><strong>V1 rollback:</strong> ~17K of 18K CAs rolled back (DoorLoop bugs: FAF calc error, silent retries). ~1K still on V1. V2 sandbox created (acct_1ToTTp8mURtSlOuh). DoorLoop bullish on V2 shape. Active POC underway.</div>
+      <div class="fr-owner">Maya Shoval / Furst</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator green"></div>
@@ -544,25 +544,25 @@ body {
       <div class="status-indicator green"></div>
       <div class="fr-name">AFF / Yield (EFFR - 30bps)</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status live">Live</div>
-      <div class="fr-gap">EOD balance calculation. Enabled Apr 7-10. Revenue flowing.</div>
-      <div class="fr-owner">Complete</div>
+      <div class="fr-status progress">Active on ~1K CAs</div>
+      <div class="fr-gap">EOD balance calculation live but only on ~1K CAs that remain on V1. Rolled-back CAs not earning yield. V2 AFF calculation differs (Global Payouts APIs). Fee schedule amendment in progress.</div>
+      <div class="fr-owner">Furst / Colin Morgan</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator green"></div>
       <div class="fr-name">FDIC Pass-Through (VBAN Model)</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status live">Live</div>
-      <div class="fr-gap">Pass-through eligible via FBO. $250K per entity limit. Not true DDA (see contractual feature #1).</div>
-      <div class="fr-owner">N/A</div>
+      <div class="fr-status live">Live — All 20K CAs</div>
+      <div class="fr-gap">FDIC eligibility enabled for all 20,000 CAs (only 18 failures). Pass-through via FBO, $250K per entity. Not true DDA (see contractual #1).</div>
+      <div class="fr-owner">Complete</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator red"></div>
       <div class="fr-name">FDIC-Insured DDAs (True Deposit)</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status blocked">Not Available</div>
-      <div class="fr-gap"><strong>Contractual Feature #1.</strong> No confirmed path. Partner bank confirmation pending. No engineering started.</div>
-      <div class="fr-owner">Stacey Wong (TBD)</div>
+      <div class="fr-status blocked">At Risk</div>
+      <div class="fr-gap"><strong>Contractual Feature #1.</strong> Fifth Third timeline uncertain. No engineering started. FDIC pass-through (VBAN) is live as interim, but true DDA still has no confirmed path to Dec 31.</div>
+      <div class="fr-owner">Steven McMurray / Ariane Chee</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator green"></div>
@@ -664,17 +664,17 @@ body {
       <div class="status-indicator amber"></div>
       <div class="fr-name">RTP Outbound (Instant Payments)</div>
       <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status blocked">Not Available</div>
-      <div class="fr-gap"><strong>Contractual #2.</strong> Not available for Treasury for Platforms today. Closest alternative: same-day wire.</div>
-      <div class="fr-owner">Sam Kansara</div>
+      <div class="fr-status progress">Target H2 2026</div>
+      <div class="fr-gap"><strong>Contractual #2.</strong> Not available for T4P today. Inbound target Sep 30 (Fifth Third). Outbound timeline follows. Closest alt: same-day wire.</div>
+      <div class="fr-owner">Treasury Product / Sam Kansara</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator amber"></div>
       <div class="fr-name">Global Payouts (Cross-Border)</div>
       <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status progress">Pricing TBD</div>
-      <div class="fr-gap"><strong>Feature available</strong> (ungated for US senders). Blocker is commercial: pricing not finalized.</div>
-      <div class="fr-owner">Omri Wislizki / Shayne Mullen</div>
+      <div class="fr-status progress">Fee Amendment Needed</div>
+      <div class="fr-gap"><strong>Feature available</strong> (ungated for US). V2 uses Global Payouts APIs (different cost structure). Without fee schedule amendment, DoorLoop gets hit with sticker pricing. SFDC Case 00762131 in progress.</div>
+      <div class="fr-owner">Colin Morgan / Furst</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator green"></div>
@@ -700,8 +700,9 @@ body {
       </div>
     </div>
     <div class="sh-badges">
-      <span class="sh-badge red">2 Blocked</span>
-      <span class="sh-badge amber">2 In Progress</span>
+      <span class="sh-badge green">2 Resolved</span>
+      <span class="sh-badge red">1 Blocked</span>
+      <span class="sh-badge amber">1 In Progress</span>
     </div>
   </div>
   <div class="feature-list">
@@ -712,9 +713,9 @@ body {
       <div class="status-indicator red"></div>
       <div class="fr-name">Standard ACH Inbound Transfer</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status blocked">Active Blocker</div>
-      <div class="fr-gap"><strong>~10K legacy bank accounts can't initiate inbound transfers.</strong> Skip verification gate needed. CEO escalated. Risk review submitted, awaiting approval.</div>
-      <div class="fr-owner">Josh Wortsman / Rohit P</div>
+      <div class="fr-status live">Resolved Jul 6</div>
+      <div class="fr-gap"><strong>RESOLVED.</strong> Skip verification gate enabled. IBT verification blocker (Citibank root cause) fixed. 15K stuck payment methods unstuck. Fully operational for V1 CAs.</div>
+      <div class="fr-owner">Complete</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator red"></div>
@@ -854,8 +855,8 @@ body {
     <div class="sh-left">
       <span class="sh-icon">🚨</span>
       <div>
-        <div class="sh-title">Immediate Actions Required</div>
-        <div class="sh-desc">Items needing resolution before Jul 13 Leadership Conversation</div>
+        <div class="sh-title">Immediate Actions & Recent Resolutions</div>
+        <div class="sh-desc">Status as of Jul 13 Leadership Conversation</div>
       </div>
     </div>
   </div>
@@ -864,44 +865,60 @@ body {
       <div></div><div>Action</div><div>Scenarios</div><div>Status</div><div>What's Needed</div><div>Owner</div>
     </div>
     <div class="feature-row">
-      <div class="status-indicator red"></div>
+      <div class="status-indicator green"></div>
       <div class="fr-name">IBT Skip Verification Gate</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status blocked">URGENT</div>
-      <div class="fr-gap">~10K connected accounts blocked from inbound transfers. DoorLoop CEO escalated. Risk review submitted, awaiting approval.</div>
-      <div class="fr-owner">Josh Wortsman / Rohit P</div>
+      <div class="fr-status live">RESOLVED Jul 6</div>
+      <div class="fr-gap">Skip verification enabled. IBT verification blocker (Citibank root cause) fixed. 15K stuck PMs unstuck. All inbound transfer paths operational.</div>
+      <div class="fr-owner">Complete</div>
     </div>
     <div class="feature-row">
-      <div class="status-indicator red"></div>
+      <div class="status-indicator green"></div>
       <div class="fr-name">H2 Radar Repricing Exclusion</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status blocked">Before Jul 15</div>
-      <div class="fr-gap">Radar repackaging comms go out Jul 15-23. ACH scores contractually free until Treasury features delivered. Need manual exclusion from repricing.</div>
-      <div class="fr-owner">Shayne Mullen</div>
+      <div class="fr-status live">RESOLVED</div>
+      <div class="fr-gap">DoorLoop excluded from Radar repackaging comms (Jul 15-23). ACH scores remain contractually free until Treasury features delivered.</div>
+      <div class="fr-owner">Complete</div>
     </div>
     <div class="feature-row">
-      <div class="status-indicator red"></div>
+      <div class="status-indicator green"></div>
       <div class="fr-name">13 CAs Treasury-Ineligible MCC</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
-      <div class="fr-status blocked">HIGH</div>
-      <div class="fr-gap">13 property management CAs incorrectly flagged as Treasury-ineligible by MCC code. Batch override filed.</div>
-      <div class="fr-owner">Rohit P / Risk Operations</div>
+      <div class="fr-status live">RESOLVED</div>
+      <div class="fr-gap">Batch MCC override approved. All 13 CAs (11 MCC 6513 + 2 MCC 8999) now Treasury-eligible.</div>
+      <div class="fr-owner">Complete</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator red"></div>
       <div class="fr-name">Escalate Feature #4 (1099-INT/Statements)</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
       <div class="fr-status blocked">No Timeline</div>
-      <div class="fr-gap">Highest risk contractual feature. DoorLoop is last rollout segment. Need product escalation and timeline commitment.</div>
+      <div class="fr-gap">Highest risk contractual feature. DoorLoop is last rollout segment. Need product escalation and timeline commitment. Key topic for today's LT conversation.</div>
       <div class="fr-owner">Shayne Mullen / Lauren Garcia</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">V2 Fee Schedule Amendment</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status progress">In Progress</div>
+      <div class="fr-gap">SFDC Case 00762131. V2 uses different AFF calculation + Global Payouts APIs. Amendment needed: "previously this line item is now this line item at same cost." Must be surgical, cannot open full schedule.</div>
+      <div class="fr-owner">Colin Morgan / Legal</div>
+    </div>
+    <div class="feature-row">
+      <div class="status-indicator amber"></div>
+      <div class="fr-name">V2 Sandbox Issues (Dimitry)</div>
+      <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
+      <div class="fr-status progress">Active</div>
+      <div class="fr-gap">V2 sandbox testing underway. Issues: (1) 500 error on account creation with multi-capability, (2) FA financial address returns placeholder credentials blocking payout-to-FA testing. Furst advising on OutboundTransfer path.</div>
+      <div class="fr-owner">Furst / Dimitry (DoorLoop)</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator green"></div>
       <div class="fr-name">Raw Bank Details API Access</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
       <div class="fr-status live">Resolved</div>
-      <div class="fr-gap">Confirmed working Jun 29. Separate 24-hour expiry issue identified (new workstream).</div>
-      <div class="fr-owner">Rohit P</div>
+      <div class="fr-gap">Confirmed working Jun 29. DoorLoop engineering verified access.</div>
+      <div class="fr-owner">Complete</div>
     </div>
   </div>
 </section>
@@ -909,8 +926,8 @@ body {
 </main>
 
 <footer class="page-footer">
-  <div class="pf-left">DoorLoop · Stripe Account Team · Shayne Mullen · Gap Analysis v1 · June 29, 2026</div>
-  <div class="pf-right">Confidential — Prepared for Maya Shoval Sign-off & Jul 13 Leadership Conversation</div>
+  <div class="pf-left">DoorLoop · Stripe Account Team · Shayne Mullen · Gap Analysis v2 · July 13, 2026</div>
+  <div class="pf-right">Confidential — Updated for Jul 13 Leadership Conversation with Ori Nir</div>
 </footer>
 
 <div class="edit-hint" id="editHint">Click status dots to cycle color. Click owner to edit. Changes sync to all viewers.</div>
