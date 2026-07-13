@@ -356,7 +356,7 @@ body {
         <div class="cg-name">FDIC-Insured DDAs</div>
       </div>
       <div class="cg-status amber">AT RISK — Partner Bank Timeline Pending</div>
-      <div class="cg-detail">True demand deposit accounts (not VBAN pass-through). Awaiting partner bank confirmation. FDIC pass-through (VBAN) enabled for all 20K CAs as interim.</div>
+      <div class="cg-detail">True demand deposit accounts (not VBAN pass-through). Awaiting partner bank confirmation. FDIC pass-through (VBAN) live as interim.</div>
       <div class="cg-consequence">DRI: Adit Patel</div>
     </div>
     <div class="cg-item">
@@ -374,7 +374,7 @@ body {
         <div class="cg-name">Check Send</div>
       </div>
       <div class="cg-status green">ON TRACK — Private Preview Live</div>
-      <div class="cg-detail">Private preview launched Jun 15. Native build (Increase + Grasshopper). Maya estimates 800-900 checks/month per PM, 30K total expenses. Pricing: $2 standard vs. DoorLoop's $1.79 (Checkbook.io). Logo customization requested.</div>
+      <div class="cg-detail">Private preview launched Jun 15. Native build (Increase + Grasshopper). Maya estimates 800-900 checks/month per PM, 30K total expenses. Pricing: $2 standard (negotiable). DoorLoop's current vendor: ~$1.27/check + $2K/mo. Logo customization requested.</div>
       <div class="cg-consequence">DRI: Adit Patel / Sam Kansara</div>
     </div>
     <div class="cg-item">
@@ -480,7 +480,7 @@ body {
       <div class="fr-name">Remote Check Deposit (RDC)</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
       <div class="fr-status progress">Beta (gated)</div>
-      <div class="fr-gap"><strong>60% of DoorLoop total payment volume is checks.</strong> Closed beta. High-value feature for this vertical.</div>
+      <div class="fr-gap"><strong>~60% of outbound expense volume is checks.</strong> Closed beta. High-value feature for property management vertical.</div>
       <div class="fr-owner">Sam Kansara</div>
     </div>
     <div class="feature-row">
@@ -521,7 +521,7 @@ body {
       <div class="fr-name">FA Creation (per CA)</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
       <div class="fr-status progress">V1 Paused · V2 POC Active</div>
-      <div class="fr-gap">~1K of 18K CAs remain on V1. V1 paused while integration stabilizes. V2 sandbox created and active POC underway. V2 architecture resolves core CA/FA balance separation issue.</div>
+      <div class="fr-gap">~1K of 18K CAs remain on V1. V1 paused while integration stabilizes. V2 sandbox created and active POC underway. V2 architecture designed to address CA/FA balance separation.</div>
       <div class="fr-owner">Maya Shoval / Furst</div>
     </div>
     <div class="feature-row">
@@ -553,7 +553,7 @@ body {
       <div class="fr-name">FDIC Pass-Through (VBAN Model)</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
       <div class="fr-status live">Live — All 20K CAs</div>
-      <div class="fr-gap">FDIC eligibility enabled for all 20,000 CAs (only 18 failures). Pass-through via FBO, $250K per entity. Not true DDA (see contractual #1).</div>
+      <div class="fr-gap">FDIC eligibility enabled for all ~18K eligible CAs (only 18 failures). Pass-through via FBO, $250K per entity. Not true DDA (see contractual #1).</div>
       <div class="fr-owner">Complete</div>
     </div>
     <div class="feature-row">
@@ -561,7 +561,7 @@ body {
       <div class="fr-name">FDIC-Insured DDAs (True Deposit)</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
       <div class="fr-status blocked">At Risk</div>
-      <div class="fr-gap"><strong>Contractual Feature #1.</strong> Partner bank timeline pending. FDIC pass-through (VBAN) live as interim for all 20K CAs. True DDA path being scoped.</div>
+      <div class="fr-gap"><strong>Contractual Feature #1.</strong> Partner bank timeline pending. FDIC pass-through (VBAN) live as interim for all ~18K eligible CAs. True DDA path being scoped.</div>
       <div class="fr-owner">Adit Patel</div>
     </div>
     <div class="feature-row">
@@ -657,7 +657,7 @@ body {
       <div class="fr-name">Check Send (Printed Checks)</div>
       <div class="fr-scenarios"><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
       <div class="fr-status live">On Track</div>
-      <div class="fr-gap"><strong>Contractual #3.</strong> Private preview Jun 15. Pricing negotiation needed ($2 vs $1.79 Checkbook.io).</div>
+      <div class="fr-gap"><strong>Contractual #3.</strong> Private preview Jun 15. Pricing negotiation in progress ($2 standard, negotiable).</div>
       <div class="fr-owner">Adit Patel</div>
     </div>
     <div class="feature-row">
@@ -906,11 +906,11 @@ body {
     </div>
     <div class="feature-row">
       <div class="status-indicator amber"></div>
-      <div class="fr-name">V2 Sandbox Issues (Dimitry)</div>
+      <div class="fr-name">V2 Sandbox Validation</div>
       <div class="fr-scenarios"><span class="fr-sc s1">1</span><span class="fr-sc s2">2</span><span class="fr-sc s3">3</span></div>
       <div class="fr-status progress">Active</div>
-      <div class="fr-gap">V2 sandbox testing underway. Issues: (1) 500 error on account creation with multi-capability, (2) FA financial address returns placeholder credentials blocking payout-to-FA testing. Furst advising on OutboundTransfer path.</div>
-      <div class="fr-owner">Furst / Dimitry (DoorLoop)</div>
+      <div class="fr-gap">V2 sandbox testing underway. Engineering teams working through integration flows and validating end-to-end payment paths.</div>
+      <div class="fr-owner">Furst / DoorLoop Eng</div>
     </div>
     <div class="feature-row">
       <div class="status-indicator green"></div>
